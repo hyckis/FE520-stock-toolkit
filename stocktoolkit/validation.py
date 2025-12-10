@@ -79,8 +79,9 @@ def validate_symbols(symbols: str | Iterable[str]) -> list[str]:
     if isinstance(symbols, str):
         result = [symbols]
     else:
-        result = [s for s in symbols if isinstance(s, str)]
-    if not result:
+        result = [s for s in symbols if isinstance(s, str)]        
+    result = [s.strip().upper() for s in result if s.strip()]
+    if not result: 
         raise ValueError("At least one valid symbol (string) must be provided.")
     return result
 

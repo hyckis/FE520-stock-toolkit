@@ -74,14 +74,15 @@ def download_multiple_price_data(
     interval: str = "1d",
 ) -> dict[str, pd.DataFrame]:
     
-    # Deal with uppercase/lowercase
-    interval = interval.strip().lower()
     # Validate data is not empty and index is date-like
     valid_symbols = validate_symbols(symbols)
     
     # Validate input dates
     validate_date_string(start_date)
     validate_date_string(end_date)
+
+    # Deal with uppercase/lowercase
+    interval = interval.lower()
 
     # Prepare results for return
     result: dict[str, pd.DataFrame] = {}
@@ -156,8 +157,8 @@ def resample_price(
     validate_price_dataframe(df)
 
     # Deal with uppercase/lowercase
-    freq.strip().upper()
-    how.strip().lower()
+    freq = freq.strip().upper()
+    how = how.strip().lower()
 
     if how == "last":
         resampled = df.resample(freq).last()

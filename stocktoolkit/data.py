@@ -22,7 +22,7 @@ Download price data for a single symbol from yfinance
   Start date in YYYY-MM-DD format.
 --end_date: str
   End date in YYYY-MM-DD format.
---interval: str = "id"
+--interval: str = "1d"
   Data interval, e.g. "1d", "1wk", "1mo".
 -Return pd.DataFrame: OHLCV data with a DateTimeIndex.
 -Raise ValueError if the date format is invalid or no data is returned.
@@ -31,19 +31,19 @@ def download_price_data(
         symbol: str,
         start_date: str,
         end_date: str,
-        interval: str = "id",
+        interval: str = "1d",
 ) -> pd.DataFrame:
     
     # Deal with uppercase/lowercase
     symbol = symbol.strip().upper()
-    interval.strip().lower()
+    interval = interval.strip().lower()
     
     # Validate input dates
     validate_date_string(start_date)
     validate_date_string(end_date)
 
     # Download data with yfinance
-    df = yf.download(symbol, start=start_date, end=end_date, interval=interval)
+    df = yf.download(symbol, start=start_date, end=end_date, interval=interval, auto_adjust=True)
 
     # Validate data is not empty and index is date-like
     validate_price_dataframe(df, symbol)
@@ -63,7 +63,7 @@ Download price data for multiple symbols from yfinance
   Start date in YYYY-MM-DD format.
 --end_date: str
   End date in YYYY-MM-DD format.
---interval: str = "id"
+--interval: str = "1d"
   Data interval, e.g. "1d", "1wk", "1mo".
 -Returns dict[str, pd.DataFrame]: Mapping from symbol -> price DataFrame.
 """
@@ -71,11 +71,11 @@ def download_multiple_price_data(
     symbols: list[str] | tuple[str, ...],
     start_date: str,
     end_date: str,
-    interval: str = "id",
+    interval: str = "1d",
 ) -> dict[str, pd.DataFrame]:
     
     # Deal with uppercase/lowercase
-    interval.strip().lower()
+    interval = interval.strip().lower()
     # Validate data is not empty and index is date-like
     valid_symbols = validate_symbols(symbols)
     
@@ -86,7 +86,7 @@ def download_multiple_price_data(
     # Prepare results for return
     result: dict[str, pd.DataFrame] = {}
     for sym in valid_symbols:
-        df = yf.download(sym, start=start_date, end=end_date, interval=interval)
+        df = yf.download(sym, start=start_date, end=end_date, interval=interval, auto_adjust=True)
         validate_price_dataframe(df, sym)
         if not isinstance(df.index, pd.DatetimeIndex):
             df.index = pd.to_datetime(df.index)
@@ -109,6 +109,14 @@ def get_close_price(df: pd.DataFrame, use_adjusted: bool = True) -> pd.Series:
     
     validate_price_dataframe(df)
 
+    # Handle MultiIndex columns from yfinance (when downloading single symbol)
+    if isinstance(df.columns, pd.MultiIndex):
+        # Flatten the columns by taking the first level (Price name)
+        df_flat = df.copy()
+        df_flat.columns = df_flat.columns.get_level_values(0)
+        df = df_flat
+    
+    # Try to get Adjusted Close or Close
     if use_adjusted and "Adj Close" in df.columns:
         series = df["Adj Close"]
     elif "Close" in df.columns:

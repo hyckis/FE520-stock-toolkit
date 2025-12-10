@@ -8,15 +8,6 @@ The package is designed for beginners in Python and finance. It focuses on:
 - Robust input validation and error handling
 - Clear plots for price and returns
 
-No machine learning or web development is used, in line with the project requirements.
-
----
-
-## Table of Contents
-
-1. [How to Use Our Package](#1-how-to-use-our-package)
-2. [Introduction of Modules](#2-introduction-of-modules)
-3. [Test Cases](#3-test-cases)
 
 ---
 
@@ -114,64 +105,7 @@ for symbol, df in data_dict.items():
     print(f"{symbol} - Latest price: ${close.iloc[-1]:.2f}")
 ```
 
-#### Example 3: Technical Indicators
 
-```python
-from stocktoolkit import (
-    download_price_data,
-    get_close_price,
-    moving_average,
-    rolling_volatility,
-    compute_returns,
-)
-
-# Download and prepare data
-df = download_price_data("AAPL", "2024-01-01", "2024-06-30")
-close = get_close_price(df)
-
-# Calculate indicators
-ma20 = moving_average(close, window=20)
-returns = compute_returns(close, method="simple")
-volatility = rolling_volatility(returns, window=20)
-
-# Display latest values
-print(f"Current price: ${close.iloc[-1]:.2f}")
-print(f"20-day MA: ${ma20.iloc[-1]:.2f}")
-print(f"20-day volatility: {volatility.iloc[-1]:.4f}")
-```
-
-#### Example 4: Resample Data
-
-```python
-from stocktoolkit import download_price_data, resample_price
-
-# Download daily data
-daily_df = download_price_data("AAPL", "2024-01-01", "2024-06-30")
-
-# Convert to weekly (using last price of each week)
-weekly_df = resample_price(daily_df, freq="W", how="last")
-
-# Convert to monthly (using mean)
-monthly_df = resample_price(daily_df, freq="M", how="mean")
-```
-
-### 1.4 Running the Demo
-
-A complete demo script is included:
-
-```bash
-python demo.py
-```
-
-This will:
-1. Download AAPL data from Jan 1 to Jun 30, 2024
-2. Extract close prices
-3. Compute returns
-4. Display two plots:
-   - Price chart with 20-day and 60-day moving averages
-   - Daily returns chart
-
----
 
 ## 2. Introduction of Modules
 
@@ -498,12 +432,9 @@ All error messages are designed to be helpful for debugging and learning.
 
 ---
 
-## License
 
-This project is created for educational purposes as part of FE520 coursework.
-
----
 
 ## Contributors
 
-- Team members working on this project
+- Bin Xiao
+- YiChin Ho

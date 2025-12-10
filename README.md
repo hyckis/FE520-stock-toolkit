@@ -17,8 +17,8 @@ The package is designed for beginners in Python and finance. It focuses on:
 
 #### Requirements
 
-- Python 3.10+ (tested with Python 3.11.13)
-- Internet connection (for downloading data from Yahoo Finance)
+- Python 3.10+
+
 
 #### Install Dependencies
 
@@ -428,7 +428,6 @@ The package includes comprehensive error handling:
 - **Empty data**: Raises `ValueError` when DataFrames or Series are empty
 - **Invalid parameters**: Raises `ValueError` for unsupported parameter values
 
-All error messages are designed to be helpful for debugging and learning.
 
 ---
 
